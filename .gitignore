@@ -1,0 +1,18 @@
+# Images IRM : jamais dans le dépôt (elles restent dans le dataset)
+*.nii
+*.nii.gz
+
+# Sorties de sct_run_batch (logs, QC, résultats intermédiaires)
+output*/
+log/
+qc/
+*.log
+
+# Python / Jupyter
+__pycache__/
+.ipynb_checkpoints/
+
+# Fichiers système
+Thumbs.db
+.DS_Store
+desktop.ini
