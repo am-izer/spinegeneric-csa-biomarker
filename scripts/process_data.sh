@@ -6,6 +6,7 @@
 # pour un sujet de la Spine Generic Public Database (Multi-Subject),
 # à partir de la segmentation de la moelle sur l'image T2w et des
 # labels des disques intervertébraux fournis dans derivatives/labels.
+# Génère aussi un rapport de contrôle qualité (QC) de la segmentation.
 #
 # Ce script est lancé par sct_run_batch, qui fournit :
 #   $1               : identifiant du sujet (ex. sub-amu01)
@@ -53,5 +54,13 @@ sct_process_segmentation \
   -discfile "$FILE_DISCS" \
   -vert 2:3 \
   -o "${PATH_RESULTS}/per_subject/${SUBJECT}_csa_c2c3.csv"
+
+# Contrôle qualité : segmentation de la moelle superposée à l'image T2w
+sct_qc \
+  -i "$FILE_T2W" \
+  -s "$FILE_SEG" \
+  -p sct_deepseg_sc \
+  -qc "$PATH_QC" \
+  -qc-subject "$SUBJECT"
 
 echo "Terminé : ${SUBJECT}"
