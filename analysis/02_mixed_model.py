@@ -23,5 +23,18 @@ d = df.dropna(subset=["height"])
 m1b = smf.mixedlm(formule, d, groups=d["institution_id"]).fit(reml=False)
 m2 = smf.mixedlm(formule + " + height", d, groups=d["institution_id"]).fit(reml=False)
 print(f"Avec la taille ({len(d)} sujets) :")
-print(m2.summary().tables[1].loc[["height"]])
+print(m2.summary())
 print(f"AIC sans taille : {m1b.aic:.1f}   AIC avec taille : {m2.aic:.1f}  (plus petit = meilleur)")
+
+# L'effet du sexe change-t-il quand on ajoute la taille ?
+print(f"\nEffet homme sans taille : {m1b.params['C(sex)[T.M]']:.2f} mm²")
+print(f"Effet homme avec taille : {m2.params['C(sex)[T.M]']:.2f} mm²")
+
+# Hypothèse Tokyo : décalage des sites japonais, sans puis avec la taille
+print("\nDécalage du site (mm²) et taille moyenne (cm) :")
+for site in ["tokyo", "tokyoSkyra", "tokyo750w", "juntendo750w"]:
+    sans = m1b.random_effects[site].iloc[0]
+    avec = m2.random_effects[site].iloc[0]
+    taille = d.loc[d["institution_id"] == site, "height"].mean()
+    print(f"  {site:13s} sans taille {sans:+.2f}   avec taille {avec:+.2f}   taille {taille:.0f}")
+print(f"  Taille moyenne de tous les sujets : {d['height'].mean():.0f} cm")
